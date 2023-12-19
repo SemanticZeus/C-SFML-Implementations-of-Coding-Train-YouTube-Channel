@@ -1,21 +1,17 @@
 CPP := $(wildcard *.cpp)
 OUT := $(basename $(CPP))
-EXE := $(OUT:=.exe)
-LDFLAGS:= -lsfml-graphics -lsfml-window -lsfml-system -lopengl32 -lGLU32 -lfreetype -lglfw3 -lfreeglut
+LDFLAGS:= `/opt/homebrew/bin/pkg-config --libs --cflags sfml-system sfml-window sfml-graphics freetype2 glut`
 
-ifeq ($(OS),Windows_NT)
-all: $(EXE)
-$(info windows)
+
+all: $(OUT)
 
 window.o : window/window.cpp
-	g++ -std=c++14 -c window/window.cpp
-%.exe: %.cpp
-	g++ -std=c++17 -o $@ $< $(LDFLAGS) -I glad glad/glad.c
+	clang++ --std=c++17 $(LDFLAGS) -c window/window.cpp -Wno-everything
+
+%: %.cpp window.o
+	clang++ --std=c++17 -o $@   $< $(LDFLAGS) -I glad glad/glad.c -Wno-everything -framework OpenGL  -lglut window.o
 
 clean:
-	rm $(EXE)
-else
-all: $(OUT)
-endif
+	rm $(OUT) window.o
 
 

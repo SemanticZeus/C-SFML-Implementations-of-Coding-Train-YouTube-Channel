@@ -1,0 +1,28 @@
+std::string GetUnicodeChar(unsigned int code) {
+    std::string s;
+    s.resize(5);
+    if (code <= 0x7F) {
+        s[0] = (code & 0x7F); s[1] = '\0';
+    } else if (code <= 0x7FF) {
+        // one continuation byte
+        s[1] = 0x80 | (code & 0x3F); code = (code >> 6);
+        s[0] = 0xC0 | (code & 0x1F); s[2] = '\0';
+    } else if (code <= 0xFFFF) {
+        // two continuation bytes
+        s[2] = 0x80 | (code & 0x3F); code = (code >> 6);
+        s[1] = 0x80 | (code & 0x3F); code = (code >> 6);
+        s[0] = 0xE0 | (code & 0xF); s[3] = '\0';
+    } else if (code <= 0x10FFFF) {
+        // three continuation bytes
+        s[3] = 0x80 | (code & 0x3F); code = (code >> 6);
+        s[2] = 0x80 | (code & 0x3F); code = (code >> 6);
+        s[1] = 0x80 | (code & 0x3F); code = (code >> 6);
+        s[0] = 0xF0 | (code & 0x7); s[4] = '\0';
+    } else {
+        // unicode replacement character
+        s[2] = 0xEF; s[1] = 0xBF; s[0] = 0xBD;
+        s[3] = '\0';
+    }
+    return s;
+}
+

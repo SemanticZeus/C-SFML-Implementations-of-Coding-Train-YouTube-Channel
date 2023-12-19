@@ -101,7 +101,9 @@ void drawScene()
 int main()
 {
 	sf::ContextSettings settings;
-	settings.antialiasingLevel = 16;
+	settings.antialiasingLevel = 4;
+	//settings.majorVersion = 3;
+	//settings.minorVersion = 0;
 	window = new sf::RenderWindow(sf::VideoMode(width, height), "Fourier Series", sf::Style::Default, settings);
 	srand(time(NULL));
 	window->setFramerateLimit(60);
